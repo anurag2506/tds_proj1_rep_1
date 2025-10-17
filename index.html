@@ -126,14 +126,48 @@
     addTaskBtn.addEventListener('click', () => {
       const taskText = taskInput.value.trim();
       if (taskText !== '') {
+        // Create the task element
         const taskEl = createTaskElement(taskText);
-        tasksUl.appendChild(taskEl);
-        taskInput.value = '';
+        // Clear current body content except for the task list
+        document.body.innerHTML = '<h1>Task Manager</h1>' +
+          '<div style="text-align:center;">' +
+          '<input type="text" id="taskInput" placeholder="Enter new task..." />' +
+          '<button id="addTaskBtn">Add Task</button>' +
+          '</div>' +
+          '<ul id="tasks"></ul>';
+
+        // Re-append the task list and save reference
+        const tasksUlNew = document.getElementById('tasks');
+
+        // Append the created task to the new task list
+        tasksUlNew.appendChild(taskEl);
+
+        // Re-bind event to the new add button
+        const newAddBtn = document.getElementById('addTaskBtn');
+        newAddBtn.addEventListener('click', () => {
+          const taskText = document.getElementById('taskInput').value.trim();
+          if (taskText !== '') {
+            const newTaskEl = createTaskElement(taskText);
+            // Append new task
+            document.getElementById('tasks').appendChild(newTaskEl);
+            document.getElementById('taskInput').value = '';
+          }
+        });
+
+        // Rebind Enter key event
+        document.getElementById('taskInput').addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            newAddBtn.click();
+          }
+        });
+
+        // Clear the input field
+        document.getElementById('taskInput').value = '';
       }
     });
 
     // Optional: allow pressing Enter to add
-    taskInput.addEventListener('keydown', (e) => {
+    document.getElementById('taskInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         addTaskBtn.click();
       }
